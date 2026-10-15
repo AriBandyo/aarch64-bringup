@@ -1,0 +1,29 @@
+name: build-and-test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  qemu:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install cross toolchain, QEMU and GDB
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu qemu-system-arm gdb-multiarch
+
+      - name: Build
+        run: make
+
+      - name: Test (EL1/EL2/EL3 entry, SMP, faults, interrupts, GDB)
+        run: make test
+
+      - name: Upload serial logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: build/test-logs/

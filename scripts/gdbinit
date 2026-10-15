@@ -1,0 +1,16 @@
+# Used by `make gdb` to attach to a `make debug` QEMU session.
+set pagination off
+set confirm off
+set print pretty on
+
+target remote :1234
+
+break kmain
+break secondary_main
+break handle_unexpected
+
+echo \n
+echo QEMU is halted at the reset entry (_start, 0x40200000).\n
+echo Breakpoints: kmain, secondary_main, handle_unexpected.\n
+echo Try: stepi / info registers / x/8i $pc / continue / info threads\n
+echo \n
